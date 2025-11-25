@@ -453,10 +453,4 @@ Bu proje MIT Lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosy
 
 ## Teşekkürler
 
-Pix2Pix makale yazarlarına, PyTorch ekibine ve açık kaynak topluluğuna teşekkür ederiz.
-
----
-
-**Son Güncelleme:** Kasım 2025
-
-**Versiyon:** 1.0.0
+Pix2Pix makale yazarlarına, PyTorch ekibine ve açık kaynak topluluğuna teşekkür ederim.
