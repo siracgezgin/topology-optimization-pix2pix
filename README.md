@@ -3,9 +3,11 @@
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Maintenance](https://img.shields.io/badge/maintained-yes-green.svg)
 
-# Pix2Pix Üretici Çekişmeli Ağlar ile Topoloji Optimizasyonu
+# Topoloji Optimizasyonu için Pix2Pix GAN Uygulaması
 
-**Koşullu çekişmeli ağlar kullanılarak otomatik yapısal tasarım optimizasyonu için uçtan uca derin öğrenme çerçevesi.**
+Yapısal mekanik problemlerinde optimal malzeme dağılımını tahmin etmek için koşullu üretici çekişmeli ağlar (cGAN) kullanarak geliştirilen derin öğrenme tabanlı topoloji optimizasyon sistemi.
+
+> **Yapısal tasarımda devrim**: Geleneksel FEA yöntemlerinin saatler sürdüğü hesaplamaları milisaniyeler içinde gerçekleştirin. Sınır koşulları girin, yapay zeka optimize tasarımı üretsin.
 
 ---
 
