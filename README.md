@@ -544,10 +544,10 @@ flake8 models/ utils/ scripts/
 
 Bu kodu araştırmanızda kullanırsanız, lütfen alıntılayın:
 ```bibtex
-@software{gezgin2024topology,
+@software{gezgin2025topology,
   author = {Gezgin, Siraç},
   title = {Pix2Pix GAN'lar ile Topoloji Optimizasyonu},
-  year = {2024},
+  year = {2025},
   publisher = {GitHub},
   url = {https://github.com/siracgezgin/topology-optimization-pix2pix}
 }
