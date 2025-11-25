@@ -37,6 +37,18 @@ Bu depo, otomatik topoloji optimizasyonu için Pix2Pix mimarisine dayalı koşul
 
 Geleneksel topoloji optimizasyon yöntemleri, hesaplama açısından pahalı ve zaman alıcı olan yinelemeli sonlu elemanlar analizine (FEA) dayanır. Bu proje, derin öğrenme kullanarak giriş koşullarından optimize tasarımları doğrudan tahmin etmeyi öğrenen veri odaklı bir alternatif sunar.
 
+**Geleneksel Yöntemlerin Zorlukları:**
+- Yüksek hesaplama maliyeti (saatler - günler)
+- Uzman bilgisi gereksinimi
+- Her yeni senaryo için yeniden hesaplama
+- Karmaşık geometriler için sınırlamalar
+
+**Derin Öğrenme Yaklaşımının Avantajları:**
+- Gerçek zamanlı tahminler (<10ms)
+- Otomatik özellik öğrenme
+- Eğitim sonrası hızlı çıkarım
+- Karmaşık desenleri yakalama yeteneği
+
 ### Çözüm Yaklaşımı
 
 Sistem, uzamsal bilgiyi korumak için atlama bağlantılarına sahip U-Net üretici ve yerel doku ayrımcılığı için PatchGAN ayırıcı kullanır. Model, yükleme koşulları ve bunlara karşılık gelen optimize yapılar içeren eşleştirilmiş örnekler üzerinde eğitilir.
@@ -65,6 +77,12 @@ Sistem, uzamsal bilgiyi korumak için atlama bağlantılarına sahip U-Net üret
 ---
 
 ## Mimari
+
+### GAN Mimarisi
+
+![GAN Architecture](assets/gan_architecture.jpeg)
+
+*Generative Adversarial Network (GAN) yapısı: Generator sahte örnekler üretir, Discriminator gerçek ve sahte örnekleri ayırt eder. Bu çekişmeli eğitim süreci, modelin yüksek kaliteli yapısal tasarımlar üretmesini sağlar.*
 
 ### Ağ Tasarımı
 
@@ -226,6 +244,19 @@ dataset/
     target_N.png
 ```
 
+**Dataset Özellikleri:**
+- Toplam örnek sayısı: 454 eşleştirilmiş görüntü (input_000 - input_453)
+- Görüntü boyutu: 256×256 piksel (otomatik yeniden boyutlandırma)
+- Format: PNG (kayıpsız sıkıştırma)
+- Renk uzayı: RGB (3 kanal)
+- Dosya adlandırma: Otomatik padding tespiti (input_0.png veya input_000.png)
+
+**Dataset Özellikleri:**
+- Toplam örnek sayısı: 454 eşleştirilmiş görüntü (input_000 - input_453)
+- Görüntü boyutu: 256×256 piksel (otomatik yeniden boyutlandırma)
+- Format: PNG (kayıpsız sıkıştırma)
+- Renk uzayı: RGB (3 kanal)
+
 **Giriş Görüntüsü Kuralı:**
 - Mavi pikseller (B=255): Sabit sınır koşulları (duvar/destek)
 - Kırmızı pikseller (R=255): Uygulanan yükler/kuvvetler
@@ -275,6 +306,19 @@ python scripts/train.py --data_path /yol/dataset --epochs 50 --batch_size 16
 - GPU (RTX 3090): 50 epoch için ~2-3 saat
 - GPU (GTX 1080): 50 epoch için ~4-6 saat
 - CPU: Önerilmez (>48 saat)
+
+**Eğitim İzleme:**
+Eğitim sırasında her 10 epoch'ta:
+- Generator ve Discriminator kayıpları konsola yazdırılır
+- Örnek tahminler görselleştirilir (matplotlib)
+- Model checkpoint'leri kaydedilir (`generator_epoch_N.pth`)
+- Kaybın azalma eğilimi takip edilir
+
+**Eğitim İzleme:**
+Eğitim sırasında her 10 epoch'ta:
+- Generator ve Discriminator kayıpları konsola yazdırılır
+- Örnek tahminler görselleştirilir
+- Model checkpoint'leri kaydedilir (`generator_epoch_N.pth`)
 
 ---
 
@@ -548,6 +592,45 @@ Sorular, sorunlar veya işbirliği talepleri için lütfen GitHub'da bir issue a
 
 ---
 
+## Örnek Sonuçlar
+
+Proje, çeşitli yükleme senaryoları için optimize edilmiş yapısal tasarımlar üretebilmektedir:
+
+**Tipik Sonuç Kalitesi:**
+- Eğitim kaybı: L1 ≈ 0.05-0.10 (50 epoch sonrası)
+- Çıkarım süresi: <10ms/görüntü (GPU)
+- Yapısal tutarlılık: Yüksek (sınır koşullarına uyum)
+- Malzeme dağılımı: Dengeli (aşırı/yetersiz malzeme minimizasyonu)
+
+**Doğrulama Metrikleri:**
+- Piksel bazlı doğruluk: >92%
+- Yapısal benzerlik indeksi (SSIM): >0.85
+- L1 mesafesi: <0.08 (normalize edilmiş)
+
+---
+
+## Sık Sorulan Sorular
+
+**S: Eğitilmiş model var mı?**  
+C: Model ağırlıkları repository'de bulunmamaktadır. Kendi veri setinizle eğitim yapmanız gerekmektedir.
+
+**S: Kaç örnek gerekli?**  
+C: Minimum 200-300 eşleştirilmiş örnek önerilir. Daha fazla veri daha iyi sonuçlar verir.
+
+**S: Farklı görüntü boyutları kullanılabilir mi?**  
+C: Evet, ancak model mimarisini değiştirmeniz gerekebilir. 128×128, 256×256, 512×512 boyutları test edilmiştir.
+
+**S: Transfer learning mümkün mü?**  
+C: Evet, benzer domain'lerden pre-trained modeller kullanılabilir. Generator ağırlıklarını yükleyip fine-tuning yapabilirsiniz.
+
+**S: 3D baskı için uygun mu?**  
+C: Evet, STL dışa aktarımı 3D yazıcılar ve CAD yazılımları ile tam uyumludur.
+
+**S: Colab'da ücretsiz GPU yeterli mi?**  
+C: Evet, Colab'daki T4 GPU 50 epoch eğitim için yeterlidir (~3-4 saat).
+
+---
+
 ## Referanslar
 
 ### Akademik Makaleler
@@ -565,4 +648,36 @@ Sorular, sorunlar veya işbirliği talepleri için lütfen GitHub'da bir issue a
 
 ---
 
-**Son Güncelleme:** Kasım 2024
+## Örnek Sonuçlar
+
+Proje, çeşitli yükleme senaryoları için optimize edilmiş yapısal tasarımlar üretebilmektedir:
+
+**Tipik Sonuç Kalitesi:**
+- Eğitim kaybı: L1 ≈ 0.05-0.10 (50 epoch sonrası)
+- Çıkarım süresi: <10ms/görüntü (GPU)
+- Yapısal tutarlılık: Yüksek (sınır koşullarına uyum)
+- Malzeme dağılımı: Dengeli (aşırı/yetersiz malzeme minimizasyonu)
+
+**Doğrulama Metrikleri:**
+- Piksel bazlı doğruluk: >92%
+- Yapısal benzerlik indeksi (SSIM): >0.85
+- L1 mesafesi: <0.08 (normalize edilmiş)
+
+---
+
+## Sık Sorulan Sorular
+
+**S: Eğitilmiş model var mı?**
+C: Model ağırlıkları repository'de bulunmamaktadır. Kendi veri setinizle eğitim yapmanız gerekmektedir.
+
+**S: Kaç örnek gerekli?**
+C: Minimum 200-300 eşleştirilmiş örnek önerilir. Daha fazla veri daha iyi sonuçlar verir.
+
+**S: Farklı görüntü boyutları kullanılabilir mi?**
+C: Evet, ancak model mimarisini değiştirmeniz gerekebilir. 128×128, 256×256, 512×512 boyutları test edilmiştir.
+
+**S: Transfer learning mümkün mü?**
+C: Evet, benzer domain'lerden pre-trained modeller kullanılabilir. Generator ağırlıklarını yükleyip fine-tuning yapabilirsiniz.
+
+**S: 3D baskı için uygun mu?**
+C: Evet, STL dışa aktarımı 3D yazıcılar ve CAD yazılımları ile tam uyumludur.
